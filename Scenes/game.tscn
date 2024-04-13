@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://wjch6jotmuae"]
+
+[ext_resource type="Texture2D" uid="uid://cpichnqmfbvew" path="res://assets/sprites/dev/ShepherdKebab.png" id="1_5cvcv"]
+[ext_resource type="PackedScene" uid="uid://b1ftcmc3iflqj" path="res://Scenes/Player.tscn" id="2_jlhen"]
+
+[node name="Game" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -163.0
+offset_top = -79.0
+offset_right = 2084.0
+offset_bottom = 1143.0
+texture = ExtResource("1_5cvcv")
+expand_mode = 1
+
+[node name="Player" parent="." instance=ExtResource("2_jlhen")]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+position = Vector2(1243, 575)
+polygon = PackedVector2Array(-314, -266, -133, -133, -130, -272)
