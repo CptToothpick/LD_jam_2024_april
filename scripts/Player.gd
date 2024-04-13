@@ -9,6 +9,8 @@ extends CharacterBody2D
 @export var spriteIdle: Texture = null
 @export var spriteRunRight: Texture = null
 
+var allInteractables = []
+
 var sprite2D : Sprite2D = null
 
 enum {IDLE,
@@ -48,3 +50,15 @@ func _apply_friction(amount):
 func _apply_movement(accel):
 	velocity += accel
 	velocity = velocity.limit_length(MaxSpeed)
+
+
+##Interaction funcitons
+
+func _on_interaction_area_area_entered(area):
+	allInteractables.insert(0,area)
+	pass # Replace with function body.
+
+
+func _on_interaction_area_area_exited(area):
+	allInteractables.erase(area)
+	pass # Replace with function body.
