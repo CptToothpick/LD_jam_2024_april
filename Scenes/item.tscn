@@ -1,20 +1,14 @@
 [gd_scene load_steps=4 format=3 uid="uid://bxg5wn7ts5bxi"]
 
-[ext_resource type="Texture2D" uid="uid://c8w7n0eynm4g7" path="res://assets/sprites/dev/simp.png" id="1_8kjnw"]
-[ext_resource type="Script" path="res://scripts/item.gd" id="1_b2lfn"]
+[ext_resource type="Script" path="res://scripts/item.gd" id="1_c6tn3"]
+[ext_resource type="Texture2D" uid="uid://bxk163lf2vqu5" path="res://assets/item_smash_eg.png" id="2_mu340"]
+[ext_resource type="PackedScene" uid="uid://cemiepqkvylrb" path="res://Scenes/Interactable.tscn" id="3_xnpbr"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ns6lx"]
-radius = 21.0238
-
-[node name="Item" type="Area2D"]
+[node name="Item" type="Node2D"]
 position = Vector2(500, 500)
-collision_layer = 4
-collision_mask = 0
-monitoring = false
-script = ExtResource("1_b2lfn")
+script = ExtResource("1_c6tn3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_8kjnw")
+texture = ExtResource("2_mu340")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_ns6lx")
+[node name="Interactable" parent="." instance=ExtResource("3_xnpbr")]

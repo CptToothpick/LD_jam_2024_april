@@ -9,7 +9,10 @@ extends CharacterBody2D
 @export var spriteIdle: Texture = null
 @export var spriteRunRight: Texture = null
 
+var interactableAreaCollisonShape: CollisionShape2D
+
 var allInteractables = []
+var closestInteractable : Interactable = null
 
 var sprite2D : Sprite2D = null
 
@@ -20,7 +23,48 @@ enum {IDLE,
 var state = IDLE
 
 func _ready():
+	interactableAreaCollisonShape = get_node("InteractionComponents/InteractionArea/CollisionShape2D")
 	sprite2D = find_child('Sprite2D')
+	
+func _handleInteractablePositions():
+	
+	
+	if len(allInteractables) == 0 && closestInteractable != null:
+		closestInteractable.onLeaveClosest()
+		closestInteractable = null
+	
+	if len(allInteractables) == 1:
+		
+		if(closestInteractable != allInteractables[0] && closestInteractable !=null):
+			closestInteractable.onLeaveClosest()
+			closestInteractable = allInteractables[0]
+			closestInteractable.onEnterClosest()
+	
+		if(closestInteractable == null):		
+			closestInteractable = allInteractables[0]
+			closestInteractable.onEnterClosest()
+	
+	if len(allInteractables) >= 2:
+		allInteractables.sort_custom(_sortInteractables)
+		
+		
+		
+		if allInteractables[0] != closestInteractable:
+			for i in allInteractables:
+				printraw(position.distance_to(i.position),",")
+			if closestInteractable != null:
+				closestInteractable.onLeaveClosest()
+			closestInteractable = allInteractables[0]
+			closestInteractable.onEnterClosest()
+			
+
+func _sortInteractables(a :Area2D, b:Area2D):
+	if interactableAreaCollisonShape.global_position.distance_to(a.global_position) < interactableAreaCollisonShape.global_position.distance_to(b.global_position):
+		return true
+	return false 
+	 
+func _process(delta):
+	_handleInteractablePositions()
 
 func _physics_process(delta):
 	
@@ -56,9 +100,8 @@ func _apply_movement(accel):
 
 func _on_interaction_area_area_entered(area):
 	allInteractables.insert(0,area)
-	pass # Replace with function body.
 
 
 func _on_interaction_area_area_exited(area):
 	allInteractables.erase(area)
-	pass # Replace with function body.
+	
