@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bw0ilh3uegtox"]
+
+[ext_resource type="Texture2D" uid="uid://dpm1s67sslttc" path="res://assets/cauldron.png" id="1_gp3fu"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_o80rf"]
+radius = 16.0
+height = 68.0
+
+[node name="Building" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, -42)
+texture = ExtResource("1_gp3fu")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -19)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_o80rf")

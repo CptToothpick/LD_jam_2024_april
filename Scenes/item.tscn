@@ -5,10 +5,11 @@
 [ext_resource type="PackedScene" uid="uid://cemiepqkvylrb" path="res://Scenes/Interactable.tscn" id="3_xnpbr"]
 
 [node name="Item" type="Node2D"]
-position = Vector2(500, 500)
+y_sort_enabled = true
 script = ExtResource("1_c6tn3")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+y_sort_enabled = true
 texture = ExtResource("2_mu340")
 
 [node name="Interactable" parent="." instance=ExtResource("3_xnpbr")]
