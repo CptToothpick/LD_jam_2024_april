@@ -13,6 +13,8 @@ extends CharacterBody2D
 var allInteractables = []
 var closestInteractable : Interactable = null
 
+var pickedUpItem : Item  = null
+
 #Animation enums
 enum {IDLE,
 	WALK,
@@ -33,6 +35,8 @@ var animTreeStateKeys = [
 	"idle",
 	"walk"
 ]
+
+@onready var pickUpPoint = $PickUpPoint
 
 
 #Handling of closest Interactables
@@ -75,6 +79,7 @@ func _sortInteractables(a :Area2D, b:Area2D):
 #Basic processes
 func _process(delta):
 	_handleInteractablePositions()
+	_handleActionInput()
 
 func _physics_process(delta):
 	move(delta)
@@ -119,4 +124,20 @@ func _on_interaction_area_area_entered(area):
 
 func _on_interaction_area_area_exited(area):
 	allInteractables.erase(area)
+
+func _handleActionInput():
+	if Input.is_action_just_pressed('action_one'):
+		_handleInputOne();
+	if Input.is_action_just_pressed("action_two"):
+		pass
+
+func _handleInputOne():
+	if pickedUpItem:
+		pickedUpItem.onDrop()
+		pickedUpItem = null
+	else:
+		if closestInteractable && !pickedUpItem:
+			pickedUpItem = closestInteractable.get_parent();
+			pickedUpItem.onPickup(pickUpPoint)
+	
 	
