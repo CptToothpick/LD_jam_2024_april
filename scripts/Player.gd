@@ -6,28 +6,37 @@ extends CharacterBody2D
 
 @export var direction: Vector2 = Vector2.ZERO
 
-@export var spriteIdle: Texture = null
-@export var spriteRunRight: Texture = null
+#Interaction area for items pick-up
+@onready var interactableAreaCollisonShape: CollisionShape2D = $InteractionComponents/InteractionArea/CollisionShape2D
 
-var interactableAreaCollisonShape: CollisionShape2D
-
+#All interactables nearby - will probably split into items and machines
 var allInteractables = []
 var closestInteractable : Interactable = null
 
-var sprite2D : Sprite2D = null
-
+#Animation enums
 enum {IDLE,
-	RUN_UP, RUN_DOWN, RUN_LEFT, RUN_RIGHT,
-	RUN_UP_HOLDING, RUN_DOWN_HOLDING, RUN_LEFT_HOLDING, RUN_RIGHT_HOLDING
+	WALK,
+	WALK_HOLDING
 }
+
 var state = IDLE
 
-func _ready():
-	interactableAreaCollisonShape = get_node("InteractionComponents/InteractionArea/CollisionShape2D")
-	sprite2D = find_child('Sprite2D')
-	
+@onready var animationTree = $AnimationTree
+@onready var stateMachine = animationTree["parameters/playback"]
+
+var blendPositionPath = [
+	"parameters/idle/idle_blend_space_2D/blend_position",
+	"parameters/walk/walk_blend_space_2D/blend_position"
+]
+
+var animTreeStateKeys = [
+	"idle",
+	"walk"
+]
+
+
+#Handling of closest Interactables
 func _handleInteractablePositions():
-	
 	
 	if len(allInteractables) == 0 && closestInteractable != null:
 		closestInteractable.onLeaveClosest()
@@ -62,24 +71,25 @@ func _sortInteractables(a :Area2D, b:Area2D):
 	if interactableAreaCollisonShape.global_position.distance_to(a.global_position) < interactableAreaCollisonShape.global_position.distance_to(b.global_position):
 		return true
 	return false 
-	 
+
+#Basic processes
 func _process(delta):
 	_handleInteractablePositions()
 
 func _physics_process(delta):
-	
 	move(delta)
+	animate()
 
+#movement functions
 func move(delta):
+	var moveDirection = Input.get_vector('move_left','move_right','move_up',"move_down")	
 	
-	direction = Input.get_vector('move_left','move_right','move_up',"move_down")	
-	
-	if direction == Vector2.ZERO:
-		sprite2D.texture = spriteIdle
+	if moveDirection == Vector2.ZERO:
+		state = IDLE
 		_apply_friction(Friction*delta)
 	else:
-		sprite2D.texture = spriteRunRight
-		##TODO : make animation switch
+		direction = moveDirection
+		state = WALK
 		_apply_movement(direction*Acceleration*delta)
 		_apply_friction(Friction*delta)
 	
@@ -95,6 +105,11 @@ func _apply_movement(accel):
 	velocity += accel
 	velocity = velocity.limit_length(MaxSpeed)
 
+#animation
+
+func animate() -> void:
+	stateMachine.travel(animTreeStateKeys[state])
+	animationTree.set(blendPositionPath[state], direction)
 
 ##Interaction funcitons
 

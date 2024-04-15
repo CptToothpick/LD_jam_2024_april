@@ -22,8 +22,18 @@ layer_1/tile_data = PackedInt32Array(393233, 262145, 0, 458769, 262145, 1, 39323
 
 [node name="Player" parent="." instance=ExtResource("3_5yhi2")]
 position = Vector2(769, 642)
-Acceleration = 4000
+Acceleration = 3500
 Friction = 3000
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.1
+drag_top_margin = 0.1
+drag_right_margin = 0.1
+drag_bottom_margin = 0.1
 
 [node name="Item" parent="." instance=ExtResource("2_gr8jc")]
 position = Vector2(610, 765)
