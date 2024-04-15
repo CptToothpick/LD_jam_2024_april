@@ -17,6 +17,9 @@ texture = ExtResource("2_mu340")
 [node name="Interactable" parent="." instance=ExtResource("3_xnpbr")]
 
 [node name="RigidBody2D" type="RigidBody2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+mass = 20.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
 shape = SubResource("CircleShape2D_u2i4h")

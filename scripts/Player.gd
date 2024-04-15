@@ -10,8 +10,12 @@ extends CharacterBody2D
 @onready var interactableAreaCollisonShape: CollisionShape2D = $InteractionComponents/InteractionArea/CollisionShape2D
 
 #All interactables nearby - will probably split into items and machines
-var allInteractables = []
-var closestInteractable : Interactable = null
+
+var allBuildingInteractables = []
+var closestBuildingInteractable : Interactable = null
+
+var allItemsInteractables = []
+var closestItemInteractable : Interactable = null
 
 var pickedUpItem : Item  = null
 
@@ -38,38 +42,62 @@ var animTreeStateKeys = [
 
 @onready var pickUpPoint = $PickUpPoint
 
+@export var pushForce = 1;
 
 #Handling of closest Interactables
-func _handleInteractablePositions():
+func _handleItemInteractablePositions():
 	
-	if len(allInteractables) == 0 && closestInteractable != null:
-		closestInteractable.onLeaveClosest()
-		closestInteractable = null
+	if len(allItemsInteractables) == 0 && closestItemInteractable != null:
+		closestItemInteractable.onLeaveClosest()
+		closestItemInteractable = null
 	
-	if len(allInteractables) == 1:
+	if len(allItemsInteractables) == 1:
 		
-		if(closestInteractable != allInteractables[0] && closestInteractable !=null):
-			closestInteractable.onLeaveClosest()
-			closestInteractable = allInteractables[0]
-			closestInteractable.onEnterClosest()
+		if(closestItemInteractable != allItemsInteractables[0] && closestItemInteractable !=null):
+			closestItemInteractable.onLeaveClosest()
+			closestItemInteractable = allItemsInteractables[0]
+			closestItemInteractable.onEnterClosest()
 	
-		if(closestInteractable == null):		
-			closestInteractable = allInteractables[0]
-			closestInteractable.onEnterClosest()
+		if(closestItemInteractable == null):		
+			closestItemInteractable = allItemsInteractables[0]
+			closestItemInteractable.onEnterClosest()
 	
-	if len(allInteractables) >= 2:
-		allInteractables.sort_custom(_sortInteractables)
+	if len(allItemsInteractables) >= 2:
+		allItemsInteractables.sort_custom(_sortInteractables)
 		
 		
 		
-		if allInteractables[0] != closestInteractable:
-			for i in allInteractables:
-				printraw(position.distance_to(i.position),",")
-			if closestInteractable != null:
-				closestInteractable.onLeaveClosest()
-			closestInteractable = allInteractables[0]
-			closestInteractable.onEnterClosest()
-			
+		if allItemsInteractables[0] != closestItemInteractable:
+			if closestItemInteractable != null:
+				closestItemInteractable.onLeaveClosest()
+			closestItemInteractable = allItemsInteractables[0]
+			closestItemInteractable.onEnterClosest()
+
+func _handleBuildingInteraclablePositions():
+	
+	if len(allBuildingInteractables) == 0 && closestBuildingInteractable != null:
+		closestBuildingInteractable.onLeaveClosest()
+		closestBuildingInteractable = null
+	
+	if len(allBuildingInteractables) == 1:
+		
+		if(closestBuildingInteractable != allBuildingInteractables[0] && closestBuildingInteractable !=null):
+			closestBuildingInteractable.onLeaveClosest()
+			closestBuildingInteractable = allBuildingInteractables[0]
+			closestBuildingInteractable.onEnterClosest()
+	
+		if(closestBuildingInteractable == null):		
+			closestBuildingInteractable = allBuildingInteractables[0]
+			closestBuildingInteractable.onEnterClosest()
+	
+	if len(allBuildingInteractables) >= 2:
+		allBuildingInteractables.sort_custom(_sortInteractables)
+		
+		if allBuildingInteractables[0] != closestBuildingInteractable:
+			if closestBuildingInteractable != null:
+				closestBuildingInteractable.onLeaveClosest()
+			closestBuildingInteractable = allBuildingInteractables[0]
+			closestBuildingInteractable.onEnterClosest()
 
 func _sortInteractables(a :Area2D, b:Area2D):
 	if interactableAreaCollisonShape.global_position.distance_to(a.global_position) < interactableAreaCollisonShape.global_position.distance_to(b.global_position):
@@ -78,7 +106,8 @@ func _sortInteractables(a :Area2D, b:Area2D):
 
 #Basic processes
 func _process(delta):
-	_handleInteractablePositions()
+	_handleItemInteractablePositions()
+	_handleBuildingInteraclablePositions()
 	_handleActionInput()
 
 func _physics_process(delta):
@@ -119,11 +148,16 @@ func animate() -> void:
 ##Interaction funcitons
 
 func _on_interaction_area_area_entered(area):
-	allInteractables.insert(0,area)
-
+	if area.get_parent() is Item:
+		allItemsInteractables.insert(0,area)
+	if area.get_parent() is Building:
+		allBuildingInteractables.insert(0,area)
 
 func _on_interaction_area_area_exited(area):
-	allInteractables.erase(area)
+	if area.get_parent() is Item:
+		allItemsInteractables.erase(area)
+	if area.get_parent() is Building:
+		allBuildingInteractables.erase(area)
 
 func _handleActionInput():
 	if Input.is_action_just_pressed('action_one'):
@@ -136,8 +170,7 @@ func _handleInputOne():
 		pickedUpItem.onDrop()
 		pickedUpItem = null
 	else:
-		if closestInteractable && !pickedUpItem:
-			pickedUpItem = closestInteractable.get_parent();
+		if closestItemInteractable && !pickedUpItem:
+			pickedUpItem = closestItemInteractable.get_parent();
 			pickedUpItem.onPickup(pickUpPoint)
-	
-	
+
