@@ -2,7 +2,7 @@
 
 [ext_resource type="TileSet" uid="uid://1c4lpxubfxo1" path="res://assets/tileset/kitchen_tile_set.tres" id="1_urwql"]
 [ext_resource type="PackedScene" uid="uid://bw0ilh3uegtox" path="res://Scenes/Building.tscn" id="2_7ubh1"]
-[ext_resource type="PackedScene" uid="uid://bxg5wn7ts5bxi" path="res://Scenes/Item.tscn" id="2_gr8jc"]
+[ext_resource type="PackedScene" uid="uid://bxg5wn7ts5bxi" path="res://Scenes/item.tscn" id="2_gr8jc"]
 [ext_resource type="PackedScene" uid="uid://b1ftcmc3iflqj" path="res://Scenes/Player.tscn" id="3_5yhi2"]
 
 [node name="Game" type="Node2D"]
